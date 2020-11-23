@@ -3,6 +3,7 @@ FactoryBot.define do
     message = "My important note."
     message { message }
     association :project
-    association :user
+    # ユーザーが一人だけしか作成されないようにするため。
+    user { projects.owner }
   end
 end
