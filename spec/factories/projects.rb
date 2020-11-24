@@ -6,36 +6,27 @@ FactoryBot.define do
     due_on = 1.week.from_now
     due_on { due_on }
     association :owner
-  end
 
-  # 昨日が締め切りのプロジェクト
-  factory :project_due_yesterday, class: Project do
-    sequence(:name) { |n| "Test Project #{n}" }
-    description = "Sample project for testing purposes"
-    description { description }
-    due_on = 1.day.ago
-    due_on { due_on }
-    association :owner
-  end
+    trait :with_notes do
+      after(:create) { |project| create_list(:note, 5, project: project) }
+    end
 
-  # 今日が締め切りのプロジェクト
-  factory :project_due_today, class: Project do
-    sequence(:name) { |n| "Test Project #{n}" }
-    description "Sample project for testing purposes"
-    description { description }
-    due_on Date.current.in_time_zone
-    due_on { due_on }
-    association :owner
-  end
-  
+    # 昨日が締め切りのプロジェクト
+    trait :due_yesterday do
+      due_on = 1.day.ago
+      due_on { due_on }
+    end
 
-  # 明日が締め切りのプロジェクト
-  factory :project_due_tomorrow, class: Project do
-    sequence(:name) { |n| "Test Project #{n}" }
-    description = "Sample project for testing purposes"
-    description { description }
-    due_on = 1.day.from_now
-    due_on { due_on }
-    association :owner
+    # 今日が締め切りのプロジェクト
+    trait :due_today do
+      due_on = Date.current.in_time_zone
+      due_on { due_on }
+    end
+
+    # 明日が締め切りのプロジェクト
+    trait :due_tomorrow do
+      due_on = 1.day.from_now
+      due_on { due_on }
+    end
   end
 end
