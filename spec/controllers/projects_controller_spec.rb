@@ -8,7 +8,7 @@ RSpec.describe ProjectsController, type: :controller do
     it "responds successfully" do
       sign_in user
       get :index
-      expect(response.status).to eq 200
+      expect(response).to be_successful
     end
 
     # 200レスポンスを返すこと
@@ -32,5 +32,34 @@ RSpec.describe ProjectsController, type: :controller do
         expect(response).to redirect_to "/users/sign_in"
       end
     end    
+  end
+
+  describe "#show" do
+    # 認可されたユーザーとして
+    context "as an authorized user" do
+      let(:user) { FactoryBot.create(:user) }
+      let(:project) {FactoryBot.create(:project, owner: user)}
+
+      # 正常にレスポンスを返すこと
+      it "reponds successfully" do
+        sign_in user
+        get :show, params: { id: project.id }
+        expect(response).to be_successful
+      end
+    end
+
+    #認可されていないユーザーとして
+    context "as an unauthorized user" do
+      let(:user) { FactoryBot.create(:user) }
+      let(:other_user) { FactoryBot.create(:user) }
+      let(:project) { FactoryBot.create(:project, owner: other_user) }
+      
+      # ダッシュボードにリダイレクトすること
+      it "redirects to the dashboard" do
+        sign_in user
+        get :show, params: { id: project.id }
+        expect(response).to redirect_to root_path
+      end
+    end
   end
 end
