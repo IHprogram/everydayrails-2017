@@ -7,6 +7,8 @@ FactoryBot.define do
     due_on { due_on }
     association :owner
 
+    # with_noteは、新しいプロジェクトを作成した後にメモファクトリ(note)を使って5つの新しいメモを追加する。
+    #コールバック
     trait :with_notes do
       after(:create) { |project| create_list(:note, 5, project: project) }
     end
