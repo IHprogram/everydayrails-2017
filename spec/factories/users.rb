@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :user do
+  factory :user, aliases: [:owner] do
     first_name = "Aaron"
     first_name { first_name }
     last_name = "Sumner"
