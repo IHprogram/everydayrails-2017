@@ -46,3 +46,5 @@ gem 'geocoder'
 gem 'simplecov', require: false, group: :test
 
 gem 'faker'
+
+gem 'pry-rails'
