@@ -4,6 +4,6 @@ FactoryBot.define do
     message { message }
     association :project
     # ユーザーが一人だけしか作成されないようにするため。
-    user { projects.owner }
+    user { project.owner }
   end
 end
