@@ -141,18 +141,80 @@ RSpec.describe ProjectsController, type: :controller do
     context "as a guest" do
       let(:project) {FactoryBot.create(:project)}
 
-      #302レスポンスを返すこと
+      # 302レスポンスを返すこと
       it "returns a 302 response" do
         project_params = FactoryBot.attributes_for(:project)
         patch :update, params: { id: project.id, project: project_params }
         expect(response).to have_http_status "302"
       end
 
-      #サインイン画面にリダイレクトすること
+      # サインイン画面にリダイレクトすること
       it "redirects to the sign-in page" do
         project_params = FactoryBot.attributes_for(:project)
         patch :update, params: { id: project.id, project: project_params }
         expect(response).to redirect_to "/users/sign_in"
+      end
+    end
+  end
+
+  describe "#destroy" do
+    # 認可されたユーザーとして
+    context "as an authorized user" do
+      let(:user) { FactoryBot.create(:user) }
+      let!(:project) { FactoryBot.create(:project, owner: user) }
+
+      # プロジェクトを削除できること
+      it "deletes a project" do
+        sign_in user
+        expect {
+          delete :destroy, params: { id: project.id }
+        }.to change(user.projects, :count).by(-1)
+      end
+    end
+
+    # 認可されていないユーザーとして
+    context "as an unauthorized user" do
+      let(:user) { FactoryBot.create(:user) }
+      other_user = FactoryBot.create(:user)
+      let!(:project) { FactoryBot.create(:project, owner: other_user) }
+    
+      #プロジェクトを削除できないこと
+      it "does not delete the project" do
+        sign_in user
+        expect {
+          delete :destroy, params: { id: project.id }
+        }.to_not change(Project, :count)
+      end
+    
+      # ダッシュボードにリダイレクトすること
+      it "redirects to the dashboard" do
+        sign_in user
+        delete :destroy, params: { id: project.id }
+        expect(response).to redirect_to root_path
+      end
+    end
+
+    # ゲストとして
+    context "as a guest" do
+      let!(:project) { FactoryBot.create(:project) }
+
+      # 302レスポンスを返すこと
+      it "returns a 302 response" do
+        delete :destroy, params: { id: project.id }
+        expect(response).to have_http_status "302"
+      end
+
+      # サインイン画面にリダイレクトすること
+      it "redirects to the sign-in page" do
+        delete :destroy, params: { id: project.id }
+        expect(response).to redirect_to "/users/sign_in"
+      end
+
+      # プロジェクトを削除できないこと
+      it "does not delete the project" do
+        expect {
+          delete :destroy, params: { id: project.id }
+        }.to_not change(Project, :count)
       end
     end
   end
