@@ -57,4 +57,6 @@ RSpec.configure do |config|
 
   # コントローラースペックで Devise のテストヘルパーを使用する
   config.include Devise::Test::ControllerHelpers, type: :controller
+
+  require 'capybara/rspec'
 end
