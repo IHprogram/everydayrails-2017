@@ -55,8 +55,11 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
-  # コントローラースペックで Devise のテストヘルパーを使用する
-  config.include Devise::Test::ControllerHelpers, type: :controller
+  # Devise のテストヘルパーを使用する
+  config.include Devise::Test::ControllerHelpers, type: :controller 
+  config.include RequestSpecHelper, type: :request
+  config.include Devise::Test::IntegrationHelpers, type: :feature
+
 
   require 'capybara/rspec'
 end
