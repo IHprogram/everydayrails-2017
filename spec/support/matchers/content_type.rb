@@ -8,6 +8,19 @@ RSpec::Matchers.define :have_content_type do |expected| match do |actual|
     end
   end
 
+  # toで失敗したときの報告方法を定義
+  
+  failure_message do |actual|
+    "Expected \"#{content_type(actual.content_type)} " + "(#{actual.content_type})\" to be Content Type " + "\"#{content_type(expected)}\" (#{expected})"
+  end
+
+  # to_notで失敗したときの報告方法を定義
+
+  failure_message_when_negated do |actual|
+    "Expected \"#{content_type(actual.content_type)} " + "(#{actual.content_type})\" to not be Content Type " + "\"#{content_type(expected)}\" (#{expected})"
+  end
+
+
   def content_type(type)
     types = {
       html: "text/html",
