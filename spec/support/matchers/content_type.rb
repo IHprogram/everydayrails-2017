@@ -1,0 +1,18 @@
+RSpec::Matchers.define :have_content_type do |expected| match do |actual|
+
+  # ヘルパーメソッドの定義
+  begin
+    actual.content_type == content_type(expected)
+    rescue ArgumentError
+      false
+    end
+  end
+
+  def content_type(type)
+    types = {
+      html: "text/html",
+      json: "application/json",
+    }
+    types[type.to_sym] || "unknown content type"
+  end
+end
